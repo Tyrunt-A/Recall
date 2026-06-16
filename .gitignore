@@ -1,0 +1,30 @@
+ 
+# Claves
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Memoria y datos personales
+data/
+memory/sesiones/
+memory/resumenes.json
+vision/perfiles/
+
+# Logs
+*.log
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+desktop.ini
