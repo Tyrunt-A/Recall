@@ -3,7 +3,7 @@ Recall — Configuration
 """
 
 # ─── Models ───────────────────────────────────────────────────────────────────
-MODEL          = "claude-sonnet-4-6"
+MODEL          = "claude-haiku-4-5-20251001"
 MODEL_HAIKU    = "claude-haiku-4-5-20251001"
 MAX_TOKENS     = 600
 TEMPERATURE    = 0.85
