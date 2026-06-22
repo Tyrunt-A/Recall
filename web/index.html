@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gemelo Digital — Tyrone</title>
+<title>Recall — persistent memory agent</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Syne:wght@400;600;700&display=swap');
 
@@ -38,7 +38,6 @@
     overflow: hidden;
   }
 
-  /* ── Header ── */
   header {
     display: flex;
     align-items: center;
@@ -110,7 +109,6 @@
     background: rgba(124, 111, 205, 0.08);
   }
 
-  /* ── Chat area ── */
   #chat {
     flex: 1;
     overflow-y: auto;
@@ -198,7 +196,6 @@
     font-style: italic;
   }
 
-  /* ── Thinking indicator ── */
   .thinking {
     display: flex;
     align-items: center;
@@ -226,7 +223,6 @@
     40% { opacity: 1; transform: scale(1); }
   }
 
-  /* ── Drop zone ── */
   #drop-overlay {
     display: none;
     position: fixed;
@@ -244,7 +240,6 @@
 
   #drop-overlay.active { display: flex; }
 
-  /* ── Image preview ── */
   #img-preview-bar {
     display: none;
     align-items: center;
@@ -280,7 +275,6 @@
     padding: 4px 8px;
   }
 
-  /* ── Input area ── */
   #input-area {
     padding: 16px 24px;
     border-top: 1px solid var(--border);
@@ -356,7 +350,6 @@
 
   #file-input { display: none; }
 
-  /* ── Hint bar ── */
   .hint {
     text-align: center;
     font-size: 11px;
@@ -365,7 +358,6 @@
     letter-spacing: 0.04em;
   }
 
-  /* ── Modal memoria ── */
   #modal {
     display: none;
     position: fixed;
@@ -435,173 +427,87 @@
     margin-top: -8px;
   }
 
-  /* ── Cámara oculta para captura ── */
   #cam-video { display: none; }
   #cam-canvas { display: none; }
 </style>
 </head>
 <body>
 
-<!-- Drop overlay -->
 <div id="drop-overlay">
-  <span>Suelta la imagen aquí</span>
+  <span>Drop image here</span>
 </div>
 
-<!-- Cámara oculta — solo para captura en saludos -->
 <video id="cam-video" autoplay playsinline muted></video>
 <canvas id="cam-canvas"></canvas>
 
-<!-- Header -->
 <header>
   <div class="header-left">
     <div class="status-dot"></div>
     <div>
-      <div class="header-title">Gemelo Digital</div>
-      <div class="header-sub">Tyrone Antonio Rivero — v0.1</div>
+      <div class="header-title">Recall</div>
+      <div class="header-sub">persistent memory agent</div>
     </div>
   </div>
   <div class="header-actions">
     <button class="btn-icon" id="btn-verbose" onclick="toggleVerbose()">verbose</button>
-    <button class="btn-icon" onclick="openModal()">memoria</button>
-    <button class="btn-icon" onclick="toggleRegistro()">+ rostro</button>
-    <button class="btn-icon" onclick="cerrarSesion()" style="border-color: #c06060; color: #c06060;">cerrar sesión</button>
+    <button class="btn-icon" onclick="openModal()">memory</button>
+    <button class="btn-icon" onclick="cerrarSesion()" style="border-color: #c06060; color: #c06060;">end session</button>
   </div>
 </header>
 
-<!-- Chat -->
 <div id="chat">
   <div class="msg sistema">
-    <div class="msg-bubble">Gemelo activo. Escribe un mensaje o arrastra una imagen.</div>
+    <div class="msg-bubble">Recall active. Start typing — I remember everything.</div>
   </div>
 </div>
 
-<!-- Image preview bar -->
 <div id="img-preview-bar">
   <img id="img-preview-thumb" src="" alt="preview">
-  <span class="img-name" id="img-preview-name">imagen.png</span>
-  <button onclick="clearImage()" title="Quitar imagen">✕</button>
+  <span class="img-name" id="img-preview-name">image.png</span>
+  <button onclick="clearImage()" title="Remove image">&#10007;</button>
 </div>
 
-<!-- Registro de rostro -->
-<div id="registro-bar" style="display:none;align-items:center;gap:10px;padding:8px 24px;background:var(--surface);border-top:1px solid var(--border);font-size:12px;color:var(--muted);flex-shrink:0;">
-  <span>Registrar como:</span>
-  <input type="text" id="registro-nombre" placeholder="Nombre" value="Camila"
-    style="background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font-mono);font-size:12px;padding:6px 10px;border-radius:6px;outline:none;width:120px;">
-  <button onclick="registrarRostro()"
-    style="background:none;border:1px solid var(--accent2);color:var(--accent2);font-family:var(--font-mono);font-size:11px;padding:6px 12px;border-radius:6px;cursor:pointer;">
-    📷 Capturar y registrar
-  </button>
-  <button onclick="document.getElementById('registro-bar').style.display='none'"
-    style="background:none;border:1px solid var(--danger);color:var(--danger);font-family:var(--font-mono);font-size:11px;padding:6px 12px;border-radius:6px;cursor:pointer;">
-    ✕
-  </button>
-</div>
-
-<!-- Input -->
 <div id="input-area">
-  <button class="attach-btn" onclick="document.getElementById('file-input').click()" title="Adjuntar imagen">
+  <button class="attach-btn" onclick="document.getElementById('file-input').click()" title="Attach image">
     &#128247;
   </button>
   <input type="file" id="file-input" accept="image/*" onchange="handleFileInput(this)">
   <div id="input-wrap">
     <textarea
       id="msg-input"
-      placeholder="Escribe un mensaje... (Ctrl+V para pegar imagen)"
+      placeholder="Type a message... (Ctrl+V to paste image)"
       rows="1"
       onkeydown="handleKey(event)"
       oninput="autoResize(this)"
     ></textarea>
   </div>
-  <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Enviar">&#8593;</button>
+  <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Send">&#8593;</button>
 </div>
-<div class="hint">Enter para enviar · Shift+Enter para nueva línea · Ctrl+V para pegar imagen</div>
+<div class="hint">Enter to send &middot; Shift+Enter for new line &middot; Ctrl+V to paste image</div>
 
-<!-- Modal memoria -->
 <div id="modal" onclick="closeModalOutside(event)">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <h2>Memoria</h2>
-    <div id="modal-stats">Cargando...</div>
+    <button class="modal-close" onclick="closeModal()">&#10007;</button>
+    <h2>Memory</h2>
+    <div id="modal-stats">Loading...</div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
-      <button class="modal-btn" onclick="cmdMemoria('buscar')">🔍 Buscar en memoria</button>
-      <button class="modal-btn" onclick="cmdMemoria('listar')">📋 Listar memorias recientes</button>
-      <button class="modal-btn danger" onclick="cmdMemoria('limpiar')">⚠ Limpiar historial activo</button>
+      <button class="modal-btn" onclick="cmdMemoria('buscar')">&#128269; Search memory</button>
+      <button class="modal-btn" onclick="cmdMemoria('listar')">&#128203; List recent memories</button>
+      <button class="modal-btn danger" onclick="cmdMemoria('limpiar')">&#9888; Clear active history</button>
     </div>
   </div>
 </div>
 
 <script>
-// ── Estado ──────────────────────────────────────────────────────────────────
 let pendingImage = null;
 let verboseOn    = false;
 let sending      = false;
 
-// ── Saludos (mismo set que en agente.py) ────────────────────────────────────
-const SALUDOS = [
-  "hola", "buenas", "hey", "qué tal", "buenos días", "buenas tardes",
-  "buenas noches", "epa", "épale", "ey", "hello", "hi", "ola"
-];
-
-function esSaludo(texto) {
-  const t = texto.toLowerCase().trim();
-  return SALUDOS.some(s => t.startsWith(s));
-}
-
-// ── Cámara del cliente ───────────────────────────────────────────────────────
-let cameraStream = null;
-
-async function capturarFotoDesdeCliente() {
-  /**
-   * Abre la cámara del dispositivo, captura un frame y lo devuelve como base64.
-   * Si el usuario deniega el permiso, devuelve null sin romper el flujo.
-   */
-  try {
-    const video  = document.getElementById('cam-video');
-    const canvas = document.getElementById('cam-canvas');
-
-    // Pedir permiso y abrir stream
-    cameraStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user', width: 640, height: 480 }
-    });
-    video.srcObject = cameraStream;
-
-    // Esperar a que el video tenga datos reales
-    await new Promise((resolve) => {
-      video.onloadeddata = resolve;
-      setTimeout(resolve, 2000); // fallback por si el evento no llega
-    });
-
-    // Capturar frame
-    canvas.width  = video.videoWidth  || 640;
-    canvas.height = video.videoHeight || 480;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-
-    // Convertir a base64 (sin el prefijo data:image/jpeg;base64,)
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-    const b64 = dataUrl.split(',')[1];
-
-    return b64;
-
-  } catch (err) {
-    // Permiso denegado o cámara no disponible — flujo continúa sin imagen
-    console.warn('[cam] No se pudo capturar:', err.message);
-    return null;
-  } finally {
-    // Siempre cerrar el stream para apagar la cámara
-    if (cameraStream) {
-      cameraStream.getTracks().forEach(t => t.stop());
-      cameraStream = null;
-    }
-  }
-}
-
-// ── Autosize textarea ────────────────────────────────────────────────────────
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 140) + 'px';
 }
 
-// ── Enter/Shift+Enter ────────────────────────────────────────────────────────
 function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
@@ -609,7 +515,6 @@ function handleKey(e) {
   }
 }
 
-// ── Ctrl+V — pegar imagen del portapapeles ────────────────────────────────────
 document.addEventListener('paste', (e) => {
   const items = e.clipboardData?.items;
   if (!items) return;
@@ -623,7 +528,6 @@ document.addEventListener('paste', (e) => {
   }
 });
 
-// ── Drag & drop ──────────────────────────────────────────────────────────────
 document.addEventListener('dragover', (e) => {
   e.preventDefault();
   document.getElementById('drop-overlay').classList.add('active');
@@ -644,14 +548,12 @@ document.addEventListener('drop', (e) => {
   }
 });
 
-// ── Input file ───────────────────────────────────────────────────────────────
 function handleFileInput(input) {
   const file = input.files[0];
   if (file) loadImageFile(file);
   input.value = '';
 }
 
-// ── Cargar imagen ─────────────────────────────────────────────────────────────
 function loadImageFile(file) {
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -660,7 +562,7 @@ function loadImageFile(file) {
     pendingImage = {
       b64,
       mediaType: file.type || 'image/png',
-      name: file.name || 'imagen.png',
+      name: file.name || 'image.png',
       previewUrl: dataUrl
     };
     showImagePreview();
@@ -681,7 +583,6 @@ function clearImage() {
   document.getElementById('img-preview-thumb').src = '';
 }
 
-// ── Enviar mensaje ────────────────────────────────────────────────────────────
 async function sendMessage() {
   if (sending) return;
   const input = document.getElementById('msg-input');
@@ -692,7 +593,7 @@ async function sendMessage() {
   sending = true;
   document.getElementById('send-btn').disabled = true;
 
-  const displayText = texto || '(imagen)';
+  const displayText = texto || '(image)';
   addMessage('user', displayText, pendingImage?.previewUrl);
 
   input.value = '';
@@ -704,34 +605,18 @@ async function sendMessage() {
     let data;
 
     if (pendingImage) {
-      // Enviar con imagen adjunta manualmente
       const resp = await fetch('/imagen', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           imagen_b64: pendingImage.b64,
           media_type: pendingImage.mediaType,
-          mensaje: texto || '¿Qué ves en esta imagen?'
+          mensaje: texto || 'What do you see in this image?'
         })
       });
       data = await resp.json();
       clearImage();
-
-    } else if (esSaludo(texto)) {
-      // Saludo → capturar cámara del dispositivo actual y mandar con el mensaje
-      const fotoB64 = await capturarFotoDesdeCliente();
-      const body = { mensaje: texto };
-      if (fotoB64) body.imagen_b64 = fotoB64;
-
-      const resp = await fetch('/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      data = await resp.json();
-
     } else {
-      // Mensaje normal sin imagen
       const resp = await fetch('/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -743,7 +628,7 @@ async function sendMessage() {
     removeThinking(thinkingId);
 
     if (data.tipo === 'error') {
-      addMessage('sistema', '⚠ ' + data.respuesta);
+      addMessage('sistema', '&#9888; ' + data.respuesta);
     } else if (data.tipo === 'comando') {
       addMessage('sistema', data.respuesta);
     } else {
@@ -752,7 +637,7 @@ async function sendMessage() {
 
   } catch (err) {
     removeThinking(thinkingId);
-    addMessage('sistema', '⚠ Error de conexión: ' + err.message);
+    addMessage('sistema', '&#9888; Connection error: ' + err.message);
   }
 
   sending = false;
@@ -760,7 +645,6 @@ async function sendMessage() {
   document.getElementById('msg-input').focus();
 }
 
-// ── Agregar mensaje al chat ───────────────────────────────────────────────────
 function addMessage(tipo, texto, imgUrl) {
   const chat = document.getElementById('chat');
 
@@ -769,7 +653,7 @@ function addMessage(tipo, texto, imgUrl) {
 
   const label = document.createElement('div');
   label.className = 'msg-label';
-  label.textContent = tipo === 'user' ? 'Tú' : tipo === 'gemelo' ? 'Gemelo' : 'Sistema';
+  label.textContent = tipo === 'user' ? 'You' : tipo === 'gemelo' ? 'Recall' : 'System';
 
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
@@ -791,7 +675,6 @@ function addMessage(tipo, texto, imgUrl) {
   chat.scrollTop = chat.scrollHeight;
 }
 
-// ── Thinking dots ─────────────────────────────────────────────────────────────
 let thinkingCounter = 0;
 
 function addThinking() {
@@ -804,7 +687,7 @@ function addThinking() {
 
   const label = document.createElement('div');
   label.className = 'msg-label';
-  label.textContent = 'Gemelo';
+  label.textContent = 'Recall';
 
   const dots = document.createElement('div');
   dots.className = 'thinking';
@@ -822,45 +705,6 @@ function removeThinking(id) {
   document.getElementById(id)?.remove();
 }
 
-// ── Registro de rostro ───────────────────────────────────────────────────────
-function toggleRegistro() {
-  const bar = document.getElementById('registro-bar');
-  bar.style.display = bar.style.display === 'none' ? 'flex' : 'none';
-}
-
-async function registrarRostro() {
-  const nombre = document.getElementById('registro-nombre').value.trim();
-  if (!nombre) { addMessage('sistema', '⚠ Escribe un nombre primero.'); return; }
-
-  addMessage('sistema', `Abriendo cámara para registrar a ${nombre}...`);
-
-  const fotoB64 = await capturarFotoDesdeCliente();
-  if (!fotoB64) {
-    addMessage('sistema', '⚠ No se pudo acceder a la cámara.');
-    return;
-  }
-
-  addMessage('sistema', 'Procesando embedding...');
-
-  try {
-    const resp = await fetch('/registrar_rostro', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imagen_b64: fotoB64, nombre, media_type: 'image/jpeg' })
-    });
-    const data = await resp.json();
-    if (data.ok) {
-      addMessage('sistema', `✓ ${data.mensaje}`);
-      document.getElementById('registro-bar').style.display = 'none';
-    } else {
-      addMessage('sistema', `⚠ ${data.error}`);
-    }
-  } catch (err) {
-    addMessage('sistema', '⚠ Error al registrar: ' + err.message);
-  }
-}
-
-// ── Verbose ───────────────────────────────────────────────────────────────────
 async function toggleVerbose() {
   await fetch('/verbose', { method: 'POST' });
   verboseOn = !verboseOn;
@@ -869,40 +713,34 @@ async function toggleVerbose() {
   addMessage('sistema', `Verbose: ${verboseOn ? 'ON' : 'OFF'}`);
 }
 
-
 async function cerrarSesion() {
-  if (!confirm('¿Cerrar sesión? Se guardará el historial y se generará un resumen.')) return;
-
-  addMessage('sistema', 'Cerrando sesión...');
-
+  if (!confirm('End session? History will be summarized and archived.')) return;
+  addMessage('sistema', 'Closing session...');
   try {
     const resp = await fetch('/cerrar_sesion', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ persona: 'ty' })
+      body: JSON.stringify({ persona: 'user' })
     });
-
     const data = await resp.json();
-
     if (data.status === 'ok') {
-      addMessage('sistema', '✓ Sesión cerrada. Resumen guardado.');
+      addMessage('sistema', 'Session closed. Summary saved.');
     } else {
-      addMessage('sistema', '⚠ Error al cerrar sesión: ' + data.mensaje);
+      addMessage('sistema', 'Error: ' + data.mensaje);
     }
   } catch (err) {
-    addMessage('sistema', '⚠ Error: ' + err.message);
+    addMessage('sistema', 'Error: ' + err.message);
   }
 }
 
-// ── Modal memoria ─────────────────────────────────────────────────────────────
 async function openModal() {
   document.getElementById('modal').classList.add('open');
   const resp = await fetch('/memoria/stats');
   const s = await resp.json();
   document.getElementById('modal-stats').innerHTML = `
-    <div class="stat-row"><span class="label">Historial activo</span><span class="value">${s.turnos_historial} turnos</span></div>
-    <div class="stat-row"><span class="label">Largo plazo</span><span class="value">${s.entradas_largo_plazo} entradas</span></div>
-    <div class="stat-row"><span class="label">Categorías</span><span class="value">${s.categorias.join(', ') || '—'}</span></div>
+    <div class="stat-row"><span class="label">Active history</span><span class="value">${s.turnos_historial} turns</span></div>
+    <div class="stat-row"><span class="label">Long-term memory</span><span class="value">${s.entradas_largo_plazo} entries</span></div>
+    <div class="stat-row"><span class="label">Categories</span><span class="value">${s.categorias.join(', ') || '—'}</span></div>
   `;
 }
 
@@ -912,12 +750,12 @@ function closeModalOutside(e) { if (e.target === document.getElementById('modal'
 async function cmdMemoria(accion) {
   closeModal();
   if (accion === 'buscar') {
-    const query = prompt('Buscar en memoria:');
+    const query = prompt('Search memory:');
     if (!query) return;
     const resp = await fetch('/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mensaje: `/memoria buscar ${query}` })
+      body: JSON.stringify({ mensaje: `/memory search ${query}` })
     });
     const data = await resp.json();
     addMessage('sistema', data.respuesta);
@@ -925,14 +763,14 @@ async function cmdMemoria(accion) {
     const resp = await fetch('/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mensaje: '/memoria listar' })
+      body: JSON.stringify({ mensaje: '/memory list' })
     });
     const data = await resp.json();
     addMessage('sistema', data.respuesta);
   } else if (accion === 'limpiar') {
-    if (!confirm('¿Limpiar historial activo? Las memorias a largo plazo se mantienen.')) return;
+    if (!confirm('Clear active history? Long-term memories are kept.')) return;
     await fetch('/memoria/limpiar', { method: 'POST' });
-    addMessage('sistema', 'Historial limpiado.');
+    addMessage('sistema', 'History cleared.');
   }
 }
 </script>
