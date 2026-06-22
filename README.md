@@ -1,34 +1,49 @@
 # Recall
+
 ### *A conversational agent that recalls, learns and echoes back*
 
 Recall is a persistent-memory conversational agent built on top of Claude's API. It maintains context across sessions, identifies behavioral patterns over time, and adapts its responses based on accumulated knowledge of the user.
 
----
+\---
 
 ## What it does
 
 Most AI assistants forget everything the moment you close the tab. Recall doesn't.
 
-- **Persistent memory** — stores conversation history across sessions in structured long-term and short-term layers
-- **Pattern recognition** — a silent background classifier (Claude Haiku) analyzes each interaction and tags behavioral signals without adding latency
-- **Contextual adaptation** — the main model (Claude Sonnet) receives enriched context on every turn, making responses progressively more accurate
-- **Session management** — every session is summarized and archived automatically on close
-- **Vision support** — optional facial recognition layer to identify who is speaking
+* **Persistent memory** — stores conversation history across sessions in structured long-term and short-term layers
+* **Pattern recognition** — a silent background classifier (Claude Haiku) analyzes each interaction and tags behavioral signals without adding latency
+* **Contextual adaptation** — the main model (Claude Sonnet) receives enriched context on every turn, making responses progressively more accurate
+* **Session management** — every session is summarized and archived automatically on close
+* **Vision support** — optional facial recognition layer to identify who is speaking
 
----
+\---
+
+
+
+\## Live demo
+
+
+
+\[recall-f7bz.onrender.com](https://recall-f7bz.onrender.com)
+
+
+
+\---
+
+
 
 ## Stack
 
-| Layer | Technology |
-|---|---|
-| Main model | Claude Sonnet (Anthropic API) |
-| Background classifier | Claude Haiku (async, zero latency) |
-| Memory | JSON-based dual-layer (short-term + long-term) |
-| Backend | Python + Flask |
-| Vision | DeepFace + Facenet |
-| Frontend | Vanilla HTML/CSS/JS |
+|Layer|Technology|
+|-|-|
+|Main model|Claude Sonnet (Anthropic API)|
+|Background classifier|Claude Haiku (async, zero latency)|
+|Memory|JSON-based dual-layer (short-term + long-term)|
+|Backend|Python + Flask|
+|Vision|DeepFace + Facenet|
+|Frontend|Vanilla HTML/CSS/JS|
 
----
+\---
 
 ## Architecture
 
@@ -48,7 +63,7 @@ HAIKU (background)   ← classifies interaction silently, no latency added
 MEMORY WRITER        ← persists if interaction is significant
 ```
 
----
+\---
 
 ## Setup
 
@@ -63,7 +78,7 @@ pip install -r requirements.txt
 Create a `.env` file in the project root:
 
 ```
-ANTHROPIC_API_KEY=your_api_key_here
+ANTHROPIC\_API\_KEY=your\_api\_key\_here
 ```
 
 ### Run
@@ -74,7 +89,7 @@ python app.py
 
 Open your browser at `http://localhost:5000`
 
----
+\---
 
 ## Project structure
 
@@ -95,7 +110,7 @@ recall/
     └── index.html          # Web interface
 ```
 
----
+\---
 
 ## Key design decisions
 
@@ -105,8 +120,9 @@ recall/
 
 **Async classification** — the background classifier runs in a separate thread after the response is already delivered to the user. Zero added latency.
 
----
+\---
 
 ## Built by
 
 Antonio R — [github.com/Tyrunt-A](https://github.com/Tyrunt-A)
+
